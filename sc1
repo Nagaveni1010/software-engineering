@@ -1,0 +1,80 @@
+#include<stdio.h>
+#include<math.h>
+#include<stdlib.h>
+double quadratic(double a, double b, double c, double x) {
+    return a * x * x + b * x + c;
+}
+void print_graph(double values[], int size) {
+    printf("\nWeather Model Graph:\n\n");
+    double max_value = values[0];
+    for (int i = 1; i < size; i++) {
+        if (values[i] > max_value) {
+            max_value = values[i];
+        }
+    }
+
+    for (int i = 0; i < size; i++) {
+        printf("Day %2d | ", i + 1);
+        int stars = (int)((values[i] / max_value) * 50); 
+        for (int j = 0; j < stars; j++) {
+            printf("*");
+        }
+        printf(" %.2lf\n", values[i]);
+    }
+}
+
+int main() {
+    double a, b, c, x;
+    int i, n;
+    printf("Stage 1: Hard-coded variables\n");
+    a = 1.0; b = -2.0; c = 1.0;
+    double hardcoded_values[5];
+    for (i = 0; i < 5; i++) {
+        x = i; 
+        hardcoded_values[i] = quadratic(a, b, c, x);
+    }
+    print_graph(hardcoded_values, 5);
+    printf("\nStage 2: Keyboard input\n");
+    printf("Enter coefficients a, b, c: ");
+    scanf("%lf %lf %lf", &a, &b, &c);
+    double keyboard_values[5];
+    for (i = 0; i < 5; i++) {
+        x = i;
+        keyboard_values[i] = quadratic(a, b, c, x);
+    }
+    print_graph(keyboard_values, 5);
+    printf("\nStage 3: Reading coefficients from file 'coefficients.txt'\n");
+    FILE *file = fopen("coefficients.txt", "r");
+    if (file == NULL) {
+        printf("Error: Could not open file.\n");
+        return 1;
+    }
+    fscanf(file, "%lf %lf %lf", &a, &b, &c);
+    fclose(file);
+    double file_values[5];
+    for (i = 0; i < 5; i++) {
+        x = i;
+        file_values[i] = quadratic(a, b, c, x);
+    }
+    print_graph(file_values, 5);
+    printf("\nStage 4: Reading multiple sets of inputs from 'inputs.txt'\n");
+    file = fopen("inputs.txt", "r");
+    if (file == NULL) {
+        printf("Can open file.\n");
+        return 1;
+    }
+    fscanf(file, "%d", &n); 
+    double multi_values[5];
+    for (int set = 0; set < n; set++) {
+        printf("\nSet %d:\n", set + 1);
+        fscanf(file, "%lf %lf %lf", &a, &b, &c);
+        for (i = 0; i < 5; i++) {
+            x = i;
+            multi_values[i] = quadratic(a, b, c, x);
+        }
+        print_graph(multi_values, 5);
+    }
+    fclose(file);
+
+    return 0;
+}
